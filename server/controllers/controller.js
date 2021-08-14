@@ -36,10 +36,22 @@ const storage = multer.diskStorage({
     }
 });
 
-exports.imageUpload = multer({storage: storage});
+exports.imageUpload = multer({
+    storage: storage,
+    //file filter
+    fileFilter: (req, file, cb) => {
+        if(file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg"){
+            cb(null, true);
+        }else{
+            cb(null, false);
+            //return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
+            console.log('Only .png, .jpg and .jpeg format allowed!')
+        }
+    }
+});
 
 exports.fetchimage = (req, res) => {
-    Uploads.findByPk(2, {
+    Uploads.findByPk(1, {
         attributes: [
             'id',
             'name'

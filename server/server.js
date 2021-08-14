@@ -82,6 +82,6 @@ app.listen(PORT, ()=>{
 db.sequelize.sync({force: true}).then(()=>{
     console.log('Drop and Resync with {force: true}');
     Uploads.create({
-        name: 'alafsasa'
+        name: 'my-image-file_unloccode_1628965520175_alafsasa.jpg'
     });
 });
