@@ -1,176 +1,61 @@
-//import logo from './logo.svg';
-//import './App.css';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
 //import React from 'react';
+import axios from 'axios';
+import './App.css';
+import { useEffect, useState } from 'react';
 
-//GET
-//const baseURL = "https://jsonplaceholder.typicode.com/posts";
-const client = axios.create({
-  baseURL: "https://jsonplaceholder.typicode.com/posts"
-});
-//post new data
-
-//function App() {
-//  const [post, setPost] = useState(null);
-//  useEffect(()=>{
-//    axios.get(`${baseURL}/1`).then((response)=>{
-//      setPost(response.data);
-//    });
-//  }, []);
-//  if(!post) return null;
-//  return (
-//    <div>
-//      <p>Test</p>
-//      <h1>{post.title}</h1>
-//      <p>{post.body}</p>
-//    </div>
-//  );
-//}
-//
-//export default App;
-
-//POST
-//export default function App(){
-//  const [post, setPost] = useState(null);
-//  useEffect(()=>{
-//    axios.get(`${baseURL}/1`).then((response)=>{
-//      setPost(response.data);
-//    });
-//  }, []);
-//  function createPost(){
-//    axios.post(baseURL, {
-//      title: "Hello George",
-//      body: "Mystic"
-//    }).then((response)=>{
-//      setPost(response.data);
-//    });
-//  }
-//  if(!post) return "No post!"
-//  return(
-//    <div>
-//      <h1>{post.title}</h1>
-//      <p>{post.body}</p>
-//      <button onClick={createPost}>Create Post</button>
-//    </div>
-//  );
-//}
-//
-//PUT
-//export default function App(){
-//  const [post, setPost] = useState(null);
-//  useEffect(()=>{
-//    axios.get(`${baseURL}/1`).then((response)=>{
-//      setPost(response.data);
-//    });
-//  }, []);
-//  function updatePost(){
-//    axios.put(`${baseURL}/1`, {
-//      title: "Luemens",
-//      body: "The Next Light"
-//    }).then(response=>{
-//      setPost(response.data);
-//    });
-//  }
-//  if(!post) return "No post!"
-//  return(
-//    <div>
-//      <h1>{post.title}</h1>
-//      <p>{post.body}</p>
-//      <button onClick={updatePost}>Update Post</button>
-//    </div>
-//  );
-//}
-//DELETE
-//export default function App(){
-//  const [post, setPost] = useState(null);
-//  useEffect(()=>{
-//    axios.get(`${baseURL}/1`).then((response)=>{
-//      setPost(response.data);
-//    });
-//  }, []);
-//  function deletePost(){
-//    axios.delete(`${baseURL}/1`).then(()=>{
-//      alert("Post deleted!");
-//      setPost(null)
-//    });
-//  }
-//  if(!post) return "No post!"
-//  return (
-//    <div>
-//      <h1>{post.title}</h1>
-//      <p>{post.body}</p>
-//      <button onClick={deletePost}>Delete Post</button>
-//    </div>
-//  );
-//}
-
-//HANDLE ERRORS
-//export default function App(){
-//  const [post, setPost] = useState(null);
-//  const [error, setError] = useState(null);
-//  useEffect(()=>{
-//    axios.get(`${baseURL}/asdf`).then((response)=>{
-//      setPost(response.data);
-//    }).catch(error=>{
-//      setError(error);
-//    });
-//  }, []);
-//  if(error) return `Error: ${error.message}`;
-//  if(!post) return "No post!";
-//  return (
-//    <div>
-//      <h1>{post.title}</h1>
-//      <p>{post.body}</p>
-//    </div>
-//  );
-//}
-
-//AXIOS INSTANCE
-//export default function App(){
-//  const [post, setPost] = useState(null);
-//  useEffect(()=>{
-//    client.get("/1").then((response)=>{
-//      setPost(response.data);
-//    });
-//  }, []);
-//  function deletePost(){
-//    client.delete("/1").then(()=>{
-//      alert("Post deleted!");
-//      setPost(null);
-//    });
-//  }
-//  if(!post) return "No post!"
-//  return (
-//    <div>
-//      <h1>{post.title}</h1>
-//      <p>{post.body}</p>
-//      <button onClick={deletePost}>Delete Post</button>
-//    </div>
-//  );
-//}
-//ASYNC-AWAIT SYNTAX
-//this allows to write much cleaner code without then and catch callback functions
-export default function App(){
+function App(){
+  //variables
+  const [image, setImage] = useState(null);
+  const [name, setName] = useState('image-preview');
   const [post, setPost] = useState(null);
+  const [snap, setSnap] = useState('');
+  //const baseURL = "https://jsonplaceholder.typicode.com/posts/1";
+  const baseURL = "http://localhost:8080/api/auth/fetchimage";
+
   useEffect(()=>{
-    async function getPost(){
-      const response = await client.get("/1");
+    axios.get(baseURL).then((response)=>{
       setPost(response.data);
-    }
-    getPost();
+    });
   }, []);
-  async function deletePost(){
-    await client.delete("/1");
-    alert("Post deleted!");
-    setPost(null);
+
+  const handleClick = () => {
+    //console.log('handleClick working!')
+    axios.post('http://localhost:8080/image-upload', image).then(res=>{
+      console.log('Axios response: ', res);
+    });
   }
-  if(!post) return "No post"
-  return(
-    <div>
-      <h1>{post.title}</h1>
-      <p>{post.body}</p>
-      <button onClick={deletePost}>Delete Post</button>
+  //file input hanlder
+  const getFileInfo = (e) => {
+    console.log('File info working!')
+    console.log(e.target.files[0]);
+    setName(URL.createObjectURL(e.target.files[0]));
+    const formData = new FormData();
+    //file info name will be "my-image-file"
+    formData.append('my-image-file', e.target.files[0], e.target.files[0].name);
+    setImage(formData);
+  }
+
+  const thanos = () => {
+    console.log('clicked!');
+    //console.log(post.name);
+    setSnap('http://localhost:8080/static/' + post.name);
+  }
+  if(!post) return null;  
+  //console.log(post);
+  //const f = 10;
+  return (
+    <div className="App">
+      <h1>Image Upload Test</h1>
+      <input type="file" onChange={getFileInfo}/>
+      <button onClick={handleClick}>Upload</button>
+      <img src={name} alt=""/>
+      <button onClick={thanos}>Try Me</button>
+      <p>{post.id}</p>
+      <p>{post.name}</p>
+      <h1>{snap}</h1>
+      <img src={snap} alt="moment"/>
     </div>
   );
 }
+
+export default App;
